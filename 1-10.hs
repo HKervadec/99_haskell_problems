@@ -1,10 +1,18 @@
+import Data.List (group)
+import Control.Arrow
+import Control.Category
+import Prelude hiding (id,(.))
+
 main = do {prob1;
            prob2;
            prob3;
            prob4;
            prob5;
            prob6;
-           prob7}
+           prob7;
+           prob8;
+           prob9;
+           prob10}
 
 
 prob1 = do {putStrLn "Problem 1";
@@ -148,3 +156,80 @@ flatten'' = reverse . rec []
         rec acc (List []) = acc
         rec acc (Elem x) = x:acc
         rec acc (List (x:xs)) = rec (rec acc x) (List xs)
+
+
+prob8 = do{putStrLn "Problem 8";
+           putStrLn . show $ compress "aaaabccaadeeee";
+           putStrLn . show $ compress' "aaaabccaadeeee";
+           putStrLn . show $ compress'' "aaaabccaadeeee";
+           putStrLn . show $ compress''' "aaaabccaadeeee"}
+
+compress :: (Eq a) => [a] -> [a]
+compress [] = []
+compress [x] = [x]
+compress (x:xs)
+    | x == (head xs) = compress xs
+    | otherwise = x : compress xs
+
+compress' :: (Eq a) => [a] -> [a]
+compress' = reverse . foldl eqHead []
+    where
+        eqHead [] e = [e]
+        eqHead acc e = if e == head(acc) then acc else e:acc
+
+compress'' :: (Eq a) => [a] -> [a]
+compress'' = foldr eqHead []
+    where
+        eqHead e [] = [e]
+        eqHead e acc = if e == head(acc) then acc else e:acc
+
+compress''' = map head . group
+
+
+prob9 = do{putStrLn "Problem 9";
+           putStrLn . show $ pack "aaaabccaadeeee";
+           putStrLn . show $ pack' "aaaabccaadeeee";
+           putStrLn . show $ pack'' "aaaabccaadeeee";
+           putStrLn . show $ pack''' "aaaabccaadeeee"}
+
+
+pack :: Eq a => [a] -> [[a]]
+pack (x:xs) = reverse $ ppack  xs [[x]]
+
+ppack :: Eq a => [a] -> [[a]] -> [[a]]
+ppack [] acc = acc
+ppack (x:xs) (y:ys)
+  | x == head(y) = ppack xs ((x:y):ys)
+  | otherwise = ppack xs ([x]:y:ys)
+
+
+pack' :: Eq a => [a] -> [[a]]
+pack' xs = foldr fn [] xs
+  where
+    fn x [] = [[x]]
+    fn x (y:ys)
+      | x == head(y) = ((x:y):ys)
+      | otherwise = ([x]:y:ys)
+
+pack'' :: Eq a => [a] -> [[a]]
+pack'' [] = []
+pack'' (x:xs) = let (first,rest) = span (==x) (x:xs)
+                in first:(pack'' rest)
+
+pack''' :: Eq a => [a] -> [[a]]
+pack''' [] = []
+pack''' (x:xs) = (x:takeWhile (==x) xs):(pack''' $ dropWhile (==x) xs)
+
+
+prob10 = do{putStrLn "Problem 10";
+            putStrLn . show $ encode "aaaabccaadeeee";
+            putStrLn . show $ encode' "aaaabccaadeeee";
+            putStrLn . show $ encode'' "aaaabccaadeeee"}
+
+encode :: Eq a => [a] -> [(Int, a)]
+encode = map (\l -> (length l, head l)) . group
+
+encode' xs = [(length l, head l) | l <- group xs]
+
+encode'' :: Eq a => [a] -> [(Int, a)]
+encode'' = map (length &&& head) . group
