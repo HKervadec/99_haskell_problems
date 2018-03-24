@@ -1,7 +1,7 @@
 CC = ghc
 CC_FLAGS = -dynamic
 
-SOURCES = 1-10.hs
+SOURCES = 1-10.hs 11-20.hs
 EXEC = $(SOURCES:.hs=.out)
 
 all: $(EXEC)
