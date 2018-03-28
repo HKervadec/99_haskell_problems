@@ -7,7 +7,10 @@ main = do{prob11;
           prob12;
           prob13;
           prob14;
-          prob15}
+          prob15;
+          prob16;
+          prob17;
+          prob18}
 
 prob11 = do{putStrLn "Problem 11";
             putStrLn . show $ encodeModified "aaaabccaadeeee";
@@ -98,3 +101,62 @@ repli' (x:xs) n = replicate n x ++ repli' xs n
 repli'' = flip $ concatMap . replicate
 
 repli''' xs n = foldr (\x acc -> (replicate n x)++acc) [] xs
+
+
+prob16 = do{putStrLn "Problem 16";
+            putStrLn . show $ dropEvery "abcdefghik" 3;
+            putStrLn . show $ dropEvery' "abcdefghik" 3;
+            putStrLn . show $ dropEvery'' "abcdefghik" 3}
+
+dropEvery :: [a] -> Int -> [a]
+dropEvery xs n = fn xs n n
+    where
+        fn [] _ _ = []
+        fn (_:xs) n 1 = fn xs n n
+        fn (x:xs) n m = x : fn xs n (m-1)
+
+dropEvery' xs n = map fst $ filter ((/=n) . snd) (zip xs (cycle [1..n]))
+
+dropEvery'' xs n = [x | (x,i) <- zip xs (cycle [1..n]), i /= n]
+
+prob17 = do{putStrLn "Problem 17";
+            putStrLn . show $ split "abcdefghik" 3;
+            putStrLn . show $ split' "abcdefghik" 3}
+
+split :: [a] -> Int -> ([a],[a])
+split = fn []
+    where
+        fn xs [] _ = (reverse xs,[])
+        fn xs ys 0 = (reverse xs,ys)
+        fn xs (y:ys) n = fn (y:xs) ys (n-1)
+
+split' xs n = foldr (\(x,i) (xs,ys) -> if i <= n then (x:xs,ys) else (xs,x:ys)) ([],[]) (zip xs [1..])
+
+
+prob18 = do{putStrLn "Problem 18";
+            putStrLn . show $ slice ['a','b','c','d','e','f','g','h','i','k'] 3 7;
+            putStrLn . show $ slice' ['a','b','c','d','e','f','g','h','i','k'] 3 7;
+            putStrLn . show $ slice'' ['a','b','c','d','e','f','g','h','i','k'] 3 7;
+            putStrLn . show $ slice''' ['a','b','c','d','e','f','g','h','i','k'] 3 7;
+            putStrLn . show $ slice'''' ['a','b','c','d','e','f','g','h','i','k'] 3 7;
+            putStrLn . show $ slice''''' ['a','b','c','d','e','f','g','h','i','k'] 3 7}
+
+slice :: [a] -> Int -> Int -> [a]
+slice xs a b = take (b-a+1) $ drop (a-1) xs
+
+slice' :: [a] -> Int -> Int -> [a]
+slice' [] _ _ = []
+slice' (x:xs) a b
+    | b == 1 = [x]
+    | a <= 1 = x:rest
+    | otherwise = rest
+    where
+        rest = slice' xs (a-1) (b-1)
+
+slice'' xs a b = foldr (\(x,i) acc -> if (a <= i) && (i <= b) then x:acc else acc) [] (zip xs [1..])
+
+slice''' xs a b = foldr (\(x,i) acc -> if a <= i then x:acc else acc) [] (zip xs [1..b])
+
+slice'''' xs a b = [x | (x,i) <- zip xs [1..b], a <= i]
+
+slice''''' xs a b = map fst $ filter ((a<=) . snd) (zip xs [1..b])
