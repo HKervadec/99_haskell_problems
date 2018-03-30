@@ -10,7 +10,8 @@ main = do{prob11;
           prob15;
           prob16;
           prob17;
-          prob18}
+          prob18;
+          prob19}
 
 prob11 = do{putStrLn "Problem 11";
             putStrLn . show $ encodeModified "aaaabccaadeeee";
@@ -160,3 +161,13 @@ slice''' xs a b = foldr (\(x,i) acc -> if a <= i then x:acc else acc) [] (zip xs
 slice'''' xs a b = [x | (x,i) <- zip xs [1..b], a <= i]
 
 slice''''' xs a b = map fst $ filter ((a<=) . snd) (zip xs [1..b])
+
+
+prob19 = do{putStrLn "Problem 19";
+            putStrLn . show $ rotate ['a','b','c','d','e','f','g','h'] 3;
+            putStrLn . show $ rotate ['a','b','c','d','e','f','g','h'] (-2)}
+
+rotate :: [a] -> Int -> [a]
+rotate xs n
+    | n >= 0 = (uncurry . flip) (++) (split xs n)
+    | otherwise = rotate xs (length xs + n)
