@@ -220,7 +220,6 @@ pack''' :: Eq a => [a] -> [[a]]
 pack''' [] = []
 pack''' (x:xs) = (x:takeWhile (==x) xs):(pack''' $ dropWhile (==x) xs)
 
-
 prob10 = do{putStrLn "Problem 10";
             putStrLn . show $ encode "aaaabccaadeeee";
             putStrLn . show $ encode' "aaaabccaadeeee";

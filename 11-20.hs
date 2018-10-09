@@ -11,7 +11,8 @@ main = do{prob11;
           prob16;
           prob17;
           prob18;
-          prob19}
+          prob19;
+          prob20}
 
 prob11 = do{putStrLn "Problem 11";
             putStrLn . show $ encodeModified "aaaabccaadeeee";
@@ -171,3 +172,21 @@ rotate :: [a] -> Int -> [a]
 rotate xs n
     | n >= 0 = (uncurry . flip) (++) (split xs n)
     | otherwise = rotate xs (length xs + n)
+
+
+prob20 = do{putStrLn "Problem 20";
+            putStrLn . show $ removeAt 2 "abcd";
+            putStrLn . show $ removeAt' 2 "abcd";
+            putStrLn . show $ removeAt'' 2 "abcd"}
+
+removeAt :: Int -> [a] -> (a, [a])
+removeAt n xs = (uncurry merge) $ split xs (n-1)
+    where merge xs (y:ys) = (y, xs++ys)
+
+removeAt' :: Int -> [a] -> (a, [a])
+removeAt' n xs = (\(xs, y:ys) -> (y, xs++ys)) $ split xs (n-1)
+
+removeAt'' :: Int -> [a] -> (a, [a])
+removeAt'' 1 (x:xs) = (x, xs)
+removeAt'' n (x:xs) = (l, x:r)
+    where (l, r) = removeAt (n - 1) xs
